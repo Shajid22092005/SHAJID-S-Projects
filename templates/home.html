@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ===================== HERO CAROUSEL ===================== -->
+<div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="4000">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+  </div>
+
+  <div class="carousel-inner rounded-4 shadow overflow-hidden">
+    <!-- Use object-fit: contain so full image is visible -->
+    <div class="carousel-item active">
+      <div class="carousel-stage">
+        <img src="{% static 'img/carousel1.png' %}" class="d-block w-100 hero-image" alt="Concert crowd">
+      </div>
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Unforgettable Concerts</h5>
+        <p>Host or discover world-class music events.</p>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="carousel-stage">
+        <img src="{% static 'img/carousel2.png' %}" class="d-block w-100 hero-image" alt="Corporate conference">
+      </div>
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Premium Conferences</h5>
+        <p>Professional venues, smooth registrations.</p>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="carousel-stage">
+        <img src="{% static 'img/carousel3.png' %}" class="d-block w-100 hero-image" alt="Creative workshop">
+      </div>
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Hands-on Workshops</h5>
+        <p>Learn, build, and collaborate with experts.</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<!-- ===================== UPCOMING EVENTS ===================== -->
+<section class="container mb-5">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+    <h2 class="mb-0 section-title">Upcoming Events</h2>
+    <input type="text" id="event-filter" class="form-control" placeholder="Filter events by name..." style="max-width:320px;">
+  </div>
+
+  <div class="row" id="event-list">
+    {% for event in events %}
+    <div class="col-md-4 mb-4 event-card-wrap">
+      <div class="card h-100 shadow-sm border-0 rounded-4 card-surface">
+        {% if event.image %}
+        <img src="{{ event.image.url }}" class="card-img-top event-thumb" alt="{{ event.title }}">
+        {% endif %}
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ event.title }}</h5>
+          <p class="text-muted mb-1 small">
+            {{ event.date|date:"F j, Y" }}
+            {% if event.time %} • {{ event.time|time:"g:i A" }}{% endif %}
+          </p>
+          <p class="text-muted small mb-2">{{ event.location }}</p>
+          <p class="card-text flex-grow-1">{{ event.description|truncatewords:20 }}</p>
+          <a href="{% url 'event_detail' event.pk %}" class="btn btn-primary mt-auto">View Details</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center">No upcoming events. Create one now!</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ===================== FEATURES SECTION ===================== -->
+<section class="container mb-5 py-5 rounded feature-surface shadow-sm">
+  <h2 class="text-center mb-5 section-title">Why Choose Our Platform?</h2>
+  <div class="row g-4 text-center">
+
+    <!-- Easy Event Creation -->
+    <div class="col-md-4">
+      <div class="p-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 16 16"
+             class="mb-3" style="color: var(--icon-accent-1);">
+          <path fill="currentColor"
+            d="M4 .5a.5.5 0 0 0-1 0V1H2A2 2 0 0 0 0 3v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 
+            0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-3.146-6.854a.5.5 0 0 1 .092.638l-.057.07l-3 
+            3a.5.5 0 0 1-.638.057l-.07-.057l-1.5-1.5a.5.5 0 0 1 .638-.765l.07.057L9 9.793l2.646-2.647a.5.5 0 0 1 
+            .708 0z"/>
+        </svg>
+        <h5>Easy Event Creation</h5>
+        <p class="mb-0">Create events with full ticket-tier control in minutes.</p>
+      </div>
+    </div>
+
+    <!-- Smooth Registration -->
+    <div class="col-md-4">
+      <div class="p-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 16 16"
+             class="mb-3" style="color: var(--icon-accent-2);">
+          <path fill="currentColor"
+            d="M3 14s-1 0-1-1s1-4 5-4s5 3 5 4s-1 1-1 1zM5 7a3 3 0 1 1 0-6a3 3 0 0 1 0 
+            6zm6-3a2 2 0 1 1 4 0a2 2 0 0 1-4 0zm1 3.256A4.5 4.5 0 0 1 16 11c0 .376-.06.74-.17 
+            1.088A3.627 3.627 0 0 0 13 11c-.74 0-1.437.178-2.063.493A4.472 4.472 0 0 1 12 
+            10.256z"/>
+        </svg>
+        <h5>Smooth Registration</h5>
+        <p class="mb-0">Instant e-tickets with QR code & email delivery.</p>
+      </div>
+    </div>
+
+    <!-- Discover Events -->
+    <div class="col-md-4">
+      <div class="p-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 16 16"
+             class="mb-3" style="color: var(--icon-accent-3);">
+          <path fill="currentColor"
+            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 
+            1.415-1.415l-3.85-3.85a1.007 1.007 0 0 0-.017-.017zM12 6.5a5.5 5.5 0 1 1-11 
+            0a5.5 5.5 0 0 1 11 0z"/>
+        </svg>
+        <h5>Discover Events</h5>
+        <p class="mb-0">Find workshops, conferences, and meetups near you.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== CTA SECTION ===================== -->
+<section class="container mb-5 text-center p-5 rounded-3 cta-surface">
+  <h2 class="fw-bold mb-3">Ready to Host Your Event?</h2>
+  <p class="lead mb-4">Start creating stunning events with a single click.</p>
+  {% if user.is_authenticated %}
+    <a href="{% url 'event_create' %}" class="btn btn-lg btn-danger shadow">Create Event</a>
+  {% else %}
+    <a href="{% url 'signup' %}" class="btn btn-lg btn-warning shadow me-2">Sign Up</a>
+    <a href="{% url 'login' %}" class="btn btn-lg btn-primary shadow">Log In</a>
+  {% endif %}
+</section>
+
+<!-- ===================== PAGE-SCOPED STYLES ===================== -->
+<style>
+  /* Carousel: keep full image visible */
+  .carousel-stage {
+    height: clamp(260px, 48vw, 520px);  /* responsive fixed height */
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;           /* FULL image, no cropping */
+    background-color: #000;
+  }
+
+  /* Event cards thumbnails (can be cropped nicely here) */
+  .event-thumb {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+  }
+
+  /* Theme surface variables using data-bs-theme from base.html */
+  :root {
+    --surface: #ffffff;
+    --surface-2: #f8f9fa;
+    --text-main: #212529;
+    --text-muted-color: #6c757d;
+    --icon-accent-1: #28a745;
+    --icon-accent-2: #ffc107;
+    --icon-accent-3: #0dcaf0;
+  }
+  html[data-bs-theme="dark"] {
+    --surface: #111317;
+    --surface-2: #171a20;
+    --text-main: #e9ecef;
+    --text-muted-color: #b9c0c7;
+    --icon-accent-1: #6ddf87;
+    --icon-accent-2: #ffd761;
+    --icon-accent-3: #66d9ff;
+  }
+
+  body {
+    color: var(--text-main);
+  }
+  .card-surface {
+    background: var(--surface);
+    color: var(--text-main);
+  }
+  .feature-surface {
+    background: var(--surface-2);
+    color: var(--text-main);
+  }
+  .cta-surface {
+    background: var(--surface-2);
+    color: var(--text-main);
+  }
+  .text-muted {
+    color: var(--text-muted-color) !important;
+  }
+  .section-title {
+    color: #007BFF;
+  }
+  html[data-bs-theme="dark"] .section-title {
+    color: #5aa9ff;
+  }
+
+  /* Card hover */
+  .event-card-wrap .card {
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .event-card-wrap .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,.08);
+  }
+  html[data-bs-theme="dark"] .event-card-wrap .card:hover {
+    box-shadow: 0 12px 24px rgba(0,0,0,.4);
+  }
+
+  /* Carousel caption text always visible */
+  .carousel-caption h5,
+  .carousel-caption p {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+  }
+  html[data-bs-theme="dark"] .carousel-caption h5,
+  html[data-bs-theme="dark"] .carousel-caption p {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 8px rgba(0,0,0,1);
+  }
+</style>
+
+<!-- ===================== PAGE SCRIPTS ===================== -->
+<script>
+  // Filter events by title
+  (function() {
+    const input = document.getElementById('event-filter');
+    if (!input) return;
+    const cards = document.querySelectorAll('#event-list .event-card-wrap');
+    input.addEventListener('input', function() {
+      const q = this.value.trim().toLowerCase();
+      cards.forEach(wrap => {
+        const titleEl = wrap.querySelector('.card-title');
+        const match = !q || (titleEl && titleEl.textContent.toLowerCase().includes(q));
+        wrap.style.display = match ? '' : 'none';
+      });
+    });
+  })();
+</script>
+
+{% endblock %}

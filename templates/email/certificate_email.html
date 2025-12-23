@@ -1,0 +1,16 @@
+<!-- templates/email/certificate_email.html -->
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"></head>
+  <body>
+    <p>Hi {{ ticket.user.get_full_name|default:ticket.email }},</p>
+
+    <p>Thank you for registering for <strong>{{ ticket.event.title }}</strong>.</p>
+
+    <p>Attached is your Certificate of Participation and your e-ticket QR code (if provided). You can also access event details <a href="{{ request.build_absolute_uri(ticket.event.get_absolute_url) }}">here</a>.</p>
+
+    <p>Looking forward to seeing you at the event!</p>
+
+    <p>— The Events Team</p>
+  </body>
+</html>

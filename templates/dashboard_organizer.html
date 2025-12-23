@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-3">Organizer Dashboard</h2>
+
+  <div class="d-flex gap-2 mb-4">
+    <a class="btn btn-primary" href="{% url 'event_create' %}">+ Create Event</a>
+    <a class="btn btn-outline-secondary" href="{% url 'profile' %}">My Profile</a>
+  </div>
+
+  <h5>Your Events</h5>
+  {% if events %}
+    <ul class="list-group mb-4">
+      {% for e in events %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <a href="{% url 'event_detail' e.pk %}">{{ e.title }}</a>
+            <small class="text-muted">
+              • {{ e.date }}{% if e.time %} {{ e.time|time:"g:i A" }}{% endif %}
+            </small>
+          </span>
+          {% if e.category %}
+            <span class="badge bg-info text-dark">{{ e.category.name }}</span>
+          {% else %}
+            <span class="badge bg-secondary">Uncategorized</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No events yet.</p>
+  {% endif %}
+
+  <h5>Sales Summary</h5>
+  {% if stats %}
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr><th>Event</th><th>Tickets Sold</th><th>Revenue</th></tr>
+        </thead>
+        <tbody>
+          {% for row in stats %}
+            <tr>
+              <td>{{ row.event__title }}</td>
+              <td>{{ row.total_sold|default:0 }}</td>
+              <td>₹{{ row.revenue|default:0 }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted">No tickets sold yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

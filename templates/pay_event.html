@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Pay for {{ event.title }}{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card p-5 shadow-lg text-center">
+    <h3>Complete Payment</h3>
+    <p class="mb-1"><strong>Event:</strong> {{ event.title }}</p>
+    <p class="mb-1"><strong>Email:</strong> {{ email }}</p>
+    <p class="mb-1"><strong>Tier:</strong> {{ tier.name }}</p>
+    <p class="mb-1"><strong>Quantity:</strong> {{ qty }}</p>
+    <p class="mb-3"><strong>Total:</strong> ₹{{ total }}</p>
+
+    <form method="post" action="{% url 'pay_event' event.pk %}">
+      {% csrf_token %}
+      <button class="btn btn-primary">Pay Now (Simulated)</button>
+      <a href="{{ event.get_absolute_url }}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

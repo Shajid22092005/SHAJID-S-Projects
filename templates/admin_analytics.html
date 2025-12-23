@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Admin Analytics</h2>
+    <a class="btn btn-outline-secondary" href="/admin/">Open Django Admin</a>
+  </div>
+
+  <!-- KPIs -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card p-3 shadow-sm">
+        <div class="text-muted">Total Attendees</div>
+        <div class="fs-3 fw-bold">{{ total_attendees|default:"0" }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 shadow-sm">
+        <div class="text-muted">Most Popular Event</div>
+        <div class="fw-bold">{{ most_popular_title }}</div>
+        <small class="text-muted">{{ most_popular_count }} attendees</small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 shadow-sm">
+        <div class="text-muted">Total Revenue</div>
+        <div class="fs-3 fw-bold">₹{{ total_revenue|default:"0" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm">
+        <h6 class="mb-3">Revenue by Event</h6>
+        <canvas id="chartRevenueByEvent" height="220"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm">
+        <h6 class="mb-3">Attendees Over Time</h6>
+        <canvas id="chartAttendees" height="220"></canvas>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="card p-3 shadow-sm">
+        <h6 class="mb-3">Revenue Over Time</h6>
+        <canvas id="chartRevenueOverTime" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(async function() {
+  const res = await fetch("{% url 'analytics_json' %}");
+  const data = await res.json();
+
+  new Chart(document.getElementById('chartRevenueByEvent'), {
+    type: 'bar',
+    data: {
+      labels: data.revenue_by_event.labels,
+      datasets: [{ label: 'Revenue (₹)', data: data.revenue_by_event.values }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  new Chart(document.getElementById('chartAttendees'), {
+    type: 'line',
+    data: {
+      labels: data.attendees_by_date.labels,
+      datasets: [{ label: 'Attendees', data: data.attendees_by_date.values, fill: false }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  new Chart(document.getElementById('chartRevenueOverTime'), {
+    type: 'line',
+    data: {
+      labels: data.revenue_by_date.labels,
+      datasets: [{ label: 'Revenue (₹)', data: data.revenue_by_date.values, fill: false }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+})();
+</script>
+{% endblock %}

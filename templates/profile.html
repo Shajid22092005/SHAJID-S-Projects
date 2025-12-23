@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 1000px;">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">My Profile</h2>
+    <div class="d-flex gap-2">
+      {% if profile %}
+        <a class="btn btn-primary" href="{% url 'profile_edit' %}">Edit Profile</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Top card: user basics -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div><span class="text-muted">Name:</span> <strong>{{ user_obj.first_name }} {{ user_obj.last_name }}</strong></div>
+          <div><span class="text-muted">Username:</span> <strong>{{ user_obj.username }}</strong></div>
+          <div><span class="text-muted">Email:</span> <strong>{{ user_obj.email }}</strong></div>
+        </div>
+        <div class="col-md-6">
+          <div><span class="text-muted">Role:</span>
+            <strong>{% if profile %}{{ profile.get_role_display }}{% else %}—{% endif %}</strong>
+          </div>
+          <div><span class="text-muted">Joined:</span> <strong>{{ user_obj.date_joined|date:"Y-m-d H:i" }}</strong></div>
+          <div><span class="text-muted">Last login:</span> <strong>{{ user_obj.last_login|date:"Y-m-d H:i" }}</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card p-3 shadow-sm">
+        <div class="text-muted">Events Booked</div>
+        <div class="fs-3 fw-bold">{{ booked_events_count }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 shadow-sm">
+        <div class="text-muted">Total Tickets</div>
+        <div class="fs-3 fw-bold">{{ total_tickets }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 shadow-sm">
+        <div class="text-muted">Total Spent</div>
+        <div class="fs-3 fw-bold">₹{{ total_spent|default:"0" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upcoming tickets -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="mb-3">Upcoming Bookings</h5>
+      {% if upcoming_tickets %}
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Event</th><th>Date</th><th>Tier</th><th>Qty</th><th>Total</th><th>Booked At</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for t in upcoming_tickets %}
+              <tr>
+                <td><a href="{% url 'event_detail' t.event.pk %}">{{ t.event.title }}</a></td>
+                <td>{{ t.event.date|date:"Y-m-d" }}{% if t.event.time %} {{ t.event.time|time:"g:i A" }}{% endif %}</td>
+                <td>{{ t.tier.name }}</td>
+                <td>{{ t.quantity }}</td>
+                <td>₹{{ t.total_amount }}</td>
+                <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted mb-0">No upcoming bookings.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Past tickets -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="mb-3">Past Bookings</h5>
+      {% if past_tickets %}
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Event</th><th>Date</th><th>Tier</th><th>Qty</th><th>Total</th><th>Booked At</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for t in past_tickets %}
+              <tr>
+                <td><a href="{% url 'event_detail' t.event.pk %}">{{ t.event.title }}</a></td>
+                <td>{{ t.event.date|date:"Y-m-d" }}{% if t.event.time %} {{ t.event.time|time:"g:i A" }}{% endif %}</td>
+                <td>{{ t.tier.name }}</td>
+                <td>{{ t.quantity }}</td>
+                <td>₹{{ t.total_amount }}</td>
+                <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted mb-0">No past bookings.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Optional: RSVPs -->
+  {% if rsvps %}
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="mb-3">My RSVPs</h5>
+      <ul class="list-group">
+        {% for r in rsvps %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>
+              <a href="{% url 'event_detail' r.event.pk %}">{{ r.event.title }}</a>
+              <small class="text-muted"> • {{ r.event.date|date:"Y-m-d" }}</small>
+            </span>
+            <span class="badge {% if r.status == 'going' %}bg-success{% else %}bg-secondary{% endif %}">
+              {{ r.get_status_display }}
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

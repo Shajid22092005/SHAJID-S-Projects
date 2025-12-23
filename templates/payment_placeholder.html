@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Book {{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="card p-5 shadow-lg">
+    <h2 class="mb-3">{{ event.title }}</h2>
+    <p class="text-muted">{{ event.date|date:"F j, Y" }}{% if event.time %} • {{ event.time|time:"g:i A" }}{% endif %} • {{ event.location }}</p>
+
+    <form method="post" action="{% url 'book_event' event.pk %}" class="mx-auto" style="max-width:520px;">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label class="form-label">Email address</label>
+        <input type="email" name="email" class="form-control" required value="{{ initial_email|default:'' }}" placeholder="you@example.com">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Ticket Tier</label>
+        <select name="tier" class="form-select" required>
+          <option value="">-- Select a tier --</option>
+          {% for t in tiers %}
+            <option value="{{ t.id }}" {% if t.available == 0 %}disabled{% endif %}>
+              {{ t.name }} — ₹{{ t.price }} {% if t.available > 0 %} ({{ t.available }} left){% else %} (Sold out){% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Quantity</label>
+        <input type="number" name="quantity" class="form-control" min="1" value="1">
+      </div>
+
+      <div class="d-flex gap-2">
+        <a class="btn btn-secondary" href="{{ event.get_absolute_url }}">Cancel</a>
+        <button class="btn btn-success" type="submit">Continue</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

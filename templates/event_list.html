@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="mb-4 text-primary">All Available Events</h1>
+
+<div class="row">
+  <div class="col-md-4">
+    <input type="text" id="event-filter" class="form-control" placeholder="Filter events by title...">
+  </div>
+</div>
+
+<div class="mt-4" id="event-list-accordion">
+  {% for event in events %}
+  <div class="card mb-3 shadow-sm event-card">
+    <div class="card-header bg-light" id="heading-{{ event.pk }}">
+      <h5 class="mb-0">
+        <button class="btn btn-link w-100 text-start text-decoration-none text-dark fw-bold"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapse-{{ event.pk }}"
+                aria-expanded="false"
+                aria-controls="collapse-{{ event.pk }}">
+          {{ event.title }} | {{ event.date|date:"M d, Y" }}{% if event.time %} at {{ event.time|time:"g:i A" }}{% endif %} | Location: {{ event.location }}
+          {% if event.category %} • <span class="badge bg-info text-dark">{{ event.category.name }}</span>{% endif %}
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapse-{{ event.pk }}" class="collapse" aria-labelledby="heading-{{ event.pk }}" data-bs-parent="#event-list-accordion">
+      <div class="card-body">
+        <p class="card-text text-muted">{{ event.description|linebreaksbr }}</p>
+
+        {# --- Ticket tiers list (tier-driven, no base event.price) --- #}
+        <hr>
+        <h6 class="mb-2">Ticket Options</h6>
+        {% with tiers=event.tiers.all %}
+          {% if tiers %}
+            <ul class="list-unstyled mb-3">
+              {% for t in tiers %}
+                <li class="mb-1">
+                  • <strong>{{ t.name }}</strong>
+                  — ₹{{ t.price }}
+                  {% if t.available > 0 %}
+                    <span class="text-muted">( {{ t.available }} left )</span>
+                  {% else %}
+                    <span class="text-danger">Sold out</span>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-3">No ticket tiers configured yet.</p>
+          {% endif %}
+        {% endwith %}
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <a href="{% url 'event_detail' event.pk %}" class="btn btn-outline-secondary">View Details</a>
+          <a href="{% url 'book_event' event.pk %}" class="btn btn-success">Book / Buy Tickets</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# Keep your RSVP modal include if you still use it elsewhere #}
+  {# {% include 'rsvp_modal.html' with event=event %} #}
+
+  {% endfor %}
+</div>
+
+<script>
+  // simple client-side filter by title
+  (function () {
+    const input = document.getElementById('event-filter');
+    const cards = document.querySelectorAll('.event-card');
+    input?.addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      cards.forEach(card => {
+        const titleBtn = card.querySelector('button');
+        const text = titleBtn ? titleBtn.textContent.toLowerCase() : '';
+        card.style.display = text.includes(q) ? '' : 'none';
+      });
+    });
+  })();
+</script>
+{% endblock %}

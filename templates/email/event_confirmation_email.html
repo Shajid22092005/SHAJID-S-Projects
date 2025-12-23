@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Ticket Confirmation</title></head>
+<body style="font-family: Arial, sans-serif; color:#333; line-height:1.6;">
+  <div style="max-width:600px;margin:20px auto;border:1px solid #ddd;border-radius:8px;overflow:hidden;">
+    <div style="background:#007BFF;color:#fff;padding:18px;text-align:center;">
+      <h2 style="margin:0;">Your e-Ticket 🎟️</h2>
+    </div>
+
+    <div style="padding:18px;">
+      <p>Hi {{ user.get_full_name|default:user.username }},</p>
+
+      <p>Thanks for booking <strong>{{ event.title }}</strong>.</p>
+
+      <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+        <tr><td style="padding:6px;font-weight:bold;width:30%;">Date</td><td style="padding:6px;">{{ event.date|date:"F j, Y" }}{% if event.time %} • {{ event.time|time:"g:i A" }}{% endif %}</td></tr>
+        <tr><td style="padding:6px;font-weight:bold;">Location</td><td style="padding:6px;">{{ event.location }}</td></tr>
+        {% if ticket %}
+          <tr><td style="padding:6px;font-weight:bold;">Tier</td><td style="padding:6px;">{{ ticket.tier.name }}</td></tr>
+          <tr><td style="padding:6px;font-weight:bold;">Quantity</td><td style="padding:6px;">{{ ticket.quantity }}</td></tr>
+          <tr><td style="padding:6px;font-weight:bold;">Ticket Code</td><td style="padding:6px;">{{ ticket.code }}</td></tr>
+          <tr><td style="padding:6px;font-weight:bold;">Total</td><td style="padding:6px;">₹{{ ticket.total_amount }}</td></tr>
+        {% endif %}
+      </table>
+
+      <p style="text-align:center;margin:20px 0;">
+        <a href="{{ event_url }}" style="background:#28A745;color:#fff;padding:10px 18px;border-radius:5px;text-decoration:none;display:inline-block;">View event details</a>
+      </p>
+
+      <p>If the button doesn’t work, copy this link:<br>
+        <a href="{{ event_url }}" style="word-break:break-all;">{{ event_url }}</a>
+      </p>
+
+      <p>Your QR code is attached to this email. Please show it at entry.</p>
+      <p>Enjoy the event! 🎉</p>
+    </div>
+
+    <div style="background:#f4f4f4;color:#777;padding:10px 18px;text-align:center;font-size:12px;">
+      &copy; {% now "Y" %} Event Management
+    </div>
+  </div>
+</body></html>

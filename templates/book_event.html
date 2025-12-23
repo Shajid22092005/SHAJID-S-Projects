@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Book {{ event.title }}{% endblock %}
+
+{% block content %}
+    <h1>Confirm Your Booking: {{ event.title }}</h1>
+    <p>Date: {{ event.date|date:"F j, Y" }}</p>
+    <p>Location: {{ event.location }}</p>
+    
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Confirmation Details</h2>
+    <p>Please enter the email address where you would like to receive the booking confirmation.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_email">Email Address:</label>
+            <input 
+                type="email" 
+                name="email" 
+                id="id_email" 
+                class="form-control" 
+                value="{{ initial_email }}" 
+                required
+            >
+        </div>
+        
+        <button type="submit" class="btn btn-success mt-3">Confirm and Book</button>
+        <a href="{% url 'event_detail' pk=event.pk %}" class="btn btn-secondary mt-3">Cancel</a>
+    </form>
+{% endblock %}

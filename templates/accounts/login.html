@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-lg border-0 p-4" style="border-radius:20px;background:linear-gradient(145deg,#ffffff,#e6f3ff);">
+        <h2 class="text-center mb-4" style="color:#007BFF;">Log In</h2>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          <input type="hidden" name="next" value="{{ next|default:'/' }}">
+          <button type="submit" class="btn btn-primary w-100 py-2 mt-3"
+                  style="background:linear-gradient(135deg,#007BFF,#0056b3);border-radius:25px;">
+            Log In
+          </button>
+        </form>
+
+        <p class="text-center mt-3">
+          Don’t have an account?
+          <a href="{% url 'signup' %}" style="color:#FD7E14;">Sign Up</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

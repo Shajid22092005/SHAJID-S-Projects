@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 900px;">
+  <h1 class="text-center mb-4 text-primary">Create Event</h1>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if user.is_authenticated %}
+    <form method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm form-surface">
+      {% csrf_token %}
+
+      <h5 class="mb-3">Event Details</h5>
+      {% bootstrap_form form %}
+
+      <hr class="my-4">
+
+      <h5 class="mb-3">Ticket Tiers</h5>
+      <p class="text-muted mb-2">Add pricing tiers like <em>VIP</em>, <em>Regular</em>, or <em>Early Bird</em>.</p>
+
+      {{ formset.management_form }}
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle table-surface">
+          <thead class="table-light table-header-surface">
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Capacity</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody id="tier-table-body">
+            {% for f in formset.forms %}
+            <tr class="tier-row">
+              <td>{{ f.name }}</td>
+              <td>{{ f.price }}</td>
+              <td>{{ f.capacity }}</td>
+              <td>{% if f.instance.pk %}{{ f.DELETE }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="button" id="add-tier-row" class="btn btn-outline-secondary">+ Add another tier</button>
+        <button type="submit" class="btn btn-primary">Create Event</button>
+      </div>
+
+    </form>
+
+    <script>
+      const addBtn = document.getElementById('add-tier-row');
+      const tableBody = document.getElementById('tier-table-body');
+      const totalForms = document.getElementById('id_{{ formset.prefix }}-TOTAL_FORMS');
+
+      addBtn.addEventListener('click', () => {
+        const index = parseInt(totalForms.value);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="text" name="{{ formset.prefix }}-${index}-name" class="form-control"></td>
+          <td><input type="number" name="{{ formset.prefix }}-${index}-price" class="form-control"></td>
+          <td><input type="number" name="{{ formset.prefix }}-${index}-capacity" class="form-control"></td>
+          <td><span class="text-muted">—</span></td>`;
+        tableBody.appendChild(row);
+        totalForms.value = index + 1;
+      });
+    </script>
+
+  {% else %}
+    <p class="text-center">Please <a href="{% url 'login' %}" class="text-info">log in</a> to create an event.</p>
+  {% endif %}
+</div>
+
+<style>
+.form-surface { background: var(--surface) !important; color: var(--text); }
+.table-surface { background: var(--surface); color: var(--text); }
+.table-header-surface { background: var(--surface-2) !important; color: var(--text) !important; }
+</style>
+{% endblock %}

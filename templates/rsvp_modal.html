@@ -1,0 +1,25 @@
+<div class="modal fade" id="rsvpModal-{{ event.pk }}" tabindex="-1" aria-labelledby="rsvpModalLabel-{{ event.pk }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'book_event' event.pk %}">
+                {% csrf_token %}
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="rsvpModalLabel-{{ event.pk }}">Confirm Attendance for: {{ event.title }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter your email address to receive a confirmation and reminder for this event.</p>
+                    <div class="mb-3">
+                        <label for="id_email-{{ event.pk }}" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="id_email-{{ event.pk }}" name="email" required 
+                               placeholder="e.g., yourname@example.com" autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Confirm & Get Mail</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

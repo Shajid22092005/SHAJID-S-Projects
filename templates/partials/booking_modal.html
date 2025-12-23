@@ -1,0 +1,27 @@
+{# templates/partials/booking_modal.html #}
+<div class="modal fade" id="bookingModal-{{ event.pk }}" tabindex="-1" aria-labelledby="bookingModalLabel-{{ event.pk }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'book_event' event.pk %}">
+        {% csrf_token %}
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="bookingModalLabel-{{ event.pk }}">Confirm Attendance: {{ event.title }}</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="id_email_modal_{{ event.pk }}" class="form-label">Email</label>
+            <input type="email" id="id_email_modal_{{ event.pk }}" name="email" class="form-control" required value="{{ request.user.email|default:'' }}">
+          </div>
+          {% if event.price and event.price > 0 %}
+            <div class="alert alert-info">Paid event — we will simulate payment after you submit the email.</div>
+          {% endif %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1 class="mb-4 text-primary">Contact Us</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <p class="lead">Have a question or need support? Fill out the form below, and we'll get back to you as soon as possible.</p>
+            
+            <form>
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="id_name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="id_email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="id_message" class="form-label">Message</label>
+                    <textarea class="form-control" id="id_message" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <h2 class="mt-4 mt-md-0">Other Ways to Reach Us</h2>
+            <ul class="list-unstyled">
+                <li class="mb-2"><strong>Email:</strong> eventmanagement@gmail.com</li>
+                <li class="mb-2"><strong>Phone:</strong> 1234567890</li>
+                <li class="mb-2"><strong>Address:</strong> Coimbatore</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

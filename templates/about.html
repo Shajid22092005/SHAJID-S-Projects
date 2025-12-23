@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="mb-4 text-primary">About Our Event Management Platform</h1>
+
+<div class="row">
+  <div class="col-md-8">
+    <p class="lead">
+      We are dedicated to simplifying event creation, promotion, and attendance.
+    </p>
+
+    <h2 class="mt-5">Our Mission</h2>
+    <p>We help bring people together through seamless event management.</p>
+
+    <h2 class="mt-5">Why Choose Us?</h2>
+    <ul class="list-group list-group-surface">
+      <li class="list-group-item list-item-surface">User-friendly for both organizers and attendees.</li>
+      <li class="list-group-item list-item-surface">Powerful RSVP and ticketing system.</li>
+      <li class="list-group-item list-item-surface">Secure and reliable Django backend.</li>
+    </ul>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 shadow-sm about-surface">
+      <h5>Connect with us</h5>
+      <p class="mb-0">Find us on all major social media platforms!</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.about-surface {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+html[data-theme="dark"] .about-surface {
+  border-color: rgba(255,255,255,0.15);
+}
+.list-group-surface .list-item-surface {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+}
+</style>
+
+{% endblock %}

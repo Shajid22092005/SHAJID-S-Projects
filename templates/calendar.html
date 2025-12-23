@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Event Calendar</h1>
+    <div id="calendar"></div>
+
+    {{ events|json_script:"event-data-raw" }}
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            if (!calendarEl) {
+                console.error('Calendar element not found');
+                return;
+            }
+            
+            // This now correctly finds the script tag with the ID 'event-data-raw'
+            var eventDataRaw = document.getElementById('event-data-raw').textContent;
+            var eventsData = [];
+            try {
+                if (eventDataRaw) {
+                    var parsedData = JSON.parse(eventDataRaw);
+                    eventsData = parsedData.map(event => ({
+                        title: event.title || 'No Title',
+                        start: event.date ? new Date(event.date).toISOString() : new Date().toISOString(),
+                        url: event.url || '#'
+                    }));
+                }
+            } catch (e) {
+                console.error('Error parsing events data:', e);
+            }
+
+            // Initialize FullCalendar
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: eventsData.length ? eventsData : [{ title: 'No Events', start: new Date().toISOString() }]
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}

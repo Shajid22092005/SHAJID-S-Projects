@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+  <div class="card p-5 shadow-lg text-center">
+    <h1 class="text-success mb-3">Action Successful!</h1>
+    <p class="lead">{{ message }}</p>
+    <a href="{% url 'event_list' %}" class="btn btn-primary mt-4">Browse More Events</a>
+  </div>
+</div>
+{% endblock %}

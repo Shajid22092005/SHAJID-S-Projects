@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row g-4">
+    <!-- Left: cover + gallery -->
+    <div class="col-md-6">
+      {% if event.image %}
+        <img src="{{ event.image.url }}" class="img-fluid rounded w-100" alt="{{ event.title }}" style="max-height:420px;object-fit:cover;">
+      {% endif %}
+
+      {% if media_items %}
+        <div class="mt-3">
+          <h5>Gallery</h5>
+          <div class="d-flex flex-wrap gap-2">
+            {% for m in media_items %}
+              {% if m.type == 'image' or m.type == 'flyer' %}
+                {% if m.file %}
+                  <a href="{{ m.file.url }}" target="_blank">
+                    <img src="{{ m.file.url }}" class="rounded" style="height:90px;width:120px;object-fit:cover;" alt="{{ m.caption }}">
+                  </a>
+                {% endif %}
+              {% elif m.type == 'video' %}
+                {% if m.url %}
+                  <a href="{{ m.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    {{ m.caption|default:"Video Link" }}
+                  </a>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Right: details + actions -->
+    <div class="col-md-6">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <h1 class="mb-0">{{ event.title }}</h1>
+        {% if event.category %}
+          <span class="badge bg-info text-dark">{{ event.category.name }}</span>
+        {% endif %}
+      </div>
+
+      <p class="text-muted mb-2">
+        {{ event.date|date:"F j, Y" }}
+        {% if event.time %} • {{ event.time|time:"g:i A" }}{% endif %}
+        · {{ event.location }}
+      </p>
+
+      {% if event.description %}
+        <p>{{ event.description|linebreaksbr }}</p>
+      {% endif %}
+
+      <!-- Ticket tiers -->
+      {% if tiers %}
+        <h5 class="mt-4">Tickets</h5>
+        <ul class="list-unstyled">
+          {% for t in tiers %}
+            <li class="mb-1">
+              • <strong>{{ t.name }}</strong> — ₹{{ t.price }}
+              {% if t.available > 0 %}
+                ({{ t.available }} left)
+              {% else %}
+                <span class="text-danger">Sold out</span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No ticket tiers set for this event yet.</p>
+      {% endif %}
+
+      <!-- Actions -->
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'rsvp_event' event.pk %}" class="d-inline">
+          {% csrf_token %}
+          <select name="status" class="form-control d-inline w-auto">
+            <option value="going" {% if rsvp_status == 'going' %}selected{% endif %}>Going</option>
+            <option value="not_going" {% if rsvp_status == 'not_going' %}selected{% endif %}>Not Going</option>
+          </select>
+          <button type="submit" class="btn btn-primary ms-2">RSVP</button>
+        </form>
+
+        <!-- Book button always visible; server-side blocks past events -->
+        <a href="{% url 'book_event' event.pk %}" class="btn btn-success mt-2">Book / Buy Tickets</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-warning">Log in to RSVP or Book</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Agenda / Schedule -->
+  {% if schedule_items %}
+    <div class="mt-5">
+      <h4>Schedule / Agenda</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 180px;">Time</th>
+              <th style="width: 240px;">Title</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in schedule_items %}
+              <tr>
+                <td>
+                  {% if s.start_time %}{{ s.start_time|time:"g:i A" }}{% endif %}
+                  {% if s.end_time %} – {{ s.end_time|time:"g:i A" }}{% endif %}
+                </td>
+                <td>{{ s.title }}</td>
+                <td>{{ s.description }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
